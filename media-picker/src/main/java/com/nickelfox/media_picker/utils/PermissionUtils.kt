@@ -3,10 +3,14 @@ package com.nickelfox.media_picker.utils
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.nickelfox.media_picker.R
 
 object PermissionUtils {
     fun isPermissionsGranted(context: Context, isVideo: Boolean): Boolean {
@@ -46,21 +50,32 @@ object PermissionUtils {
                 activity.shouldShowRequestPermissionRationale(it)
             }
             if (shouldShowRationale) {
-                AlertDialog.Builder(activity)
-                    .setTitle("Media Permissions are required to Pick Media")
-                    .setPositiveButton("Ok") { _, _ ->
-
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .create()
-                    .show()
+                showAlertDialog(activity)
             } else {
                 callBack(false, notGrantedPermissions)
             }
         } else {
             callBack(true, null)
         }
+    }
+    private fun showAlertDialog(context: Context){
+        AlertDialog.Builder(context)
+            .setTitle(context.getString(R.string.enable_permissions_title))
+            .setMessage(context.getString(R.string.enable_permissions_body))
+            .setPositiveButton(context.getString(R.string.setting)) { dialog, _ ->
+                Intent().apply {
+                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    val uri = Uri.fromParts("package", context.packageName, null)
+                    data = uri
+                    dialog.dismiss()
+                    context.startActivity(this)
+                }
+
+            }
+            .setNegativeButton(context.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 }

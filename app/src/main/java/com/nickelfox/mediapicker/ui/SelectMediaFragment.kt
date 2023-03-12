@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nickelfox.media_picker.ui.MediaPicker
+import com.nickelfox.mediapicker.R
 import com.nickelfox.mediapicker.databinding.FragmentSelectMediaBinding
 import java.io.File
 
@@ -17,6 +19,7 @@ class SelectMediaFragment : Fragment() {
 
     private lateinit var itemAdapter: SelectedMediaAdapter
     private lateinit var mediaItemList: ArrayList<File>
+    private lateinit var mediaPicker: MediaPicker
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,34 +33,39 @@ class SelectMediaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             mediaItemList = ArrayList()
-            selectBtn.setOnClickListener {
-
-            }
-            noSelectBtn.setOnClickListener {
-
-            }
-
+            mediaPicker = MediaPicker(requireActivity())
             itemAdapter =
                 SelectedMediaAdapter(requireContext(), object : SelectedMediaAdapter.ClickItem {
                     override fun onClick(type: String, uri: Uri) {
-                        ItemViewFragment(uri, type).show(childFragmentManager, "Showitem")
+                        ItemViewFragment(uri, type).show(childFragmentManager, getString(R.string.show_item))
                     }
                 })
             itemRv.adapter = itemAdapter
             itemRv.layoutManager = LinearLayoutManager(requireContext())
+            selectBtn.setOnClickListener {
+                selectMedia(isMultiple = false, isVideo = true)
+            }
+            noSelectBtn.setOnClickListener {
+                selectMedia(isMultiple = true, isVideo = false)
+            }
+            checkVisibility()
+        }
+    }
+
+    private fun selectMedia(isMultiple: Boolean, isVideo: Boolean) {
+        mediaPicker.pickMedia(isMultiple, isVideo) { mediaUris, mediaPaths ->
+            val newItems = mediaPaths.map { File(it) }
+            mediaItemList.addAll(newItems)
+            itemAdapter.submitList(mediaItemList)
+            itemAdapter.notifyDataSetChanged()
             checkVisibility()
         }
     }
 
     private fun checkVisibility() {
         binding.apply {
-            if (itemAdapter.currentList.size > 0) {
-                noItemSelectedgroup.isVisible = false
-                itemSelectedGroup.isVisible = true
-            } else {
-                noItemSelectedgroup.isVisible = true
-                itemSelectedGroup.isVisible = false
-            }
+            noItemSelectedgroup.isVisible = itemAdapter.currentList.isEmpty()
+            itemSelectedGroup.isVisible = itemAdapter.currentList.isNotEmpty()
         }
     }
 
