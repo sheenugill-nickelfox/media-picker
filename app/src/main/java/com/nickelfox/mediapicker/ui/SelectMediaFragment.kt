@@ -42,30 +42,47 @@ class SelectMediaFragment : Fragment() {
                 })
             itemRv.adapter = itemAdapter
             itemRv.layoutManager = LinearLayoutManager(requireContext())
-            selectBtn.setOnClickListener {
+            selectImageBtn.setOnClickListener {
+                selectMedia(isMultiple = false, isVideo = false)
+            }
+            selectVideoBtn.setOnClickListener {
                 selectMedia(isMultiple = false, isVideo = true)
+            }
+            selectMultipleImagesBtn.setOnClickListener {
+                selectMedia(isMultiple = true, isVideo = false)
+            }
+            selectMultipleVideosBtn.setOnClickListener {
+                selectMedia(isMultiple = true, isVideo = true)
             }
             noSelectBtn.setOnClickListener {
                 selectMedia(isMultiple = true, isVideo = false)
             }
             checkVisibility()
+            selectedCount()
         }
     }
 
     private fun selectMedia(isMultiple: Boolean, isVideo: Boolean) {
         mediaPicker.pickMedia(isMultiple, isVideo) { mediaUris, mediaPaths ->
-            val newItems = mediaPaths.map { File(it) }
-            mediaItemList.addAll(newItems)
+            mediaPaths.forEach {
+                mediaItemList.add(File(it))
+            }
             itemAdapter.submitList(mediaItemList)
             itemAdapter.notifyDataSetChanged()
             checkVisibility()
+            selectedCount()
         }
     }
 
     private fun checkVisibility() {
         binding.apply {
-            noItemSelectedgroup.isVisible = itemAdapter.currentList.isEmpty()
+            noItemSelectedGroup.isVisible = itemAdapter.currentList.isEmpty()
             itemSelectedGroup.isVisible = itemAdapter.currentList.isNotEmpty()
+        }
+    }
+    private fun selectedCount(){
+        binding.selectedCountTv.text = buildString {
+            append("(${itemAdapter.currentList.size})")
         }
     }
 

@@ -7,27 +7,26 @@ import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 import com.nickelfox.media_picker.utils.getPath
 
-class SelectMediaContract(private val context: Context, private val isMultiple:Boolean, private val isVideo:Boolean):
-    ActivityResultContract<Array<String>, Pair<ArrayList<Uri>?, ArrayList<String>?>?>() {
+class SelectMediaContract(private val context: Context, private val isVideo:Boolean):
+    ActivityResultContract<Pair<Array<String>,Boolean>, Pair<ArrayList<Uri>?, ArrayList<String>?>?>() {
 
     private lateinit var uri: Uri
     private var mediaUriList:ArrayList<Uri>? = null
     private var mediaPathList:ArrayList<String>? = null
 
-    override fun createIntent(context: Context, input: Array<String>): Intent {
+    override fun createIntent(context: Context, input: Pair<Array<String>,Boolean>): Intent {
         return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = if (isVideo) "video/*" else "image/*"
-            putExtra(Intent.EXTRA_MIME_TYPES, input)
-            if (isMultiple)
-                this.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
+            putExtra(Intent.EXTRA_MIME_TYPES, input.first)
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE,input.second)
         }
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Pair<ArrayList<Uri>?, ArrayList<String>?>? {
         mediaUriList=ArrayList()
         mediaPathList=ArrayList()
-        if(intent==null|| resultCode!= Activity.RESULT_OK || intent.data == null ) {
+        if(intent==null|| resultCode!= Activity.RESULT_OK ) {
             return null
         }
         else{

@@ -4,5 +4,9 @@
     <string name="click_here_to_select_images">Click here to select Images</string>
     <string name="select_more">Select More</string>
     <string name="selected">Selected</string>
-    <string name="show_item">Showitem</string>
+    <string name="show_item">ShowItem</string>
+    <string name="multiple_videos">Multiple Videos</string>
+    <string name="multiple_images">Multiple Images</string>
+    <string name="video">video</string>
+    <string name="image">Image</string>
 </resources>

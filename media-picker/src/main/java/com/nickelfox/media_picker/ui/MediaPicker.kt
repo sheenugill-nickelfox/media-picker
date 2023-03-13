@@ -15,13 +15,12 @@ class MediaPicker(private val activity: Activity) {
         (activity as AppCompatActivity).registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionList ->
             val allGranted = permissionList.all { it.value }
             if (allGranted)
-                startMediaPicker(isVideo)
+                startMediaPicker(isMultiple,isVideo)
         }
     private var selectImage =
         (activity as AppCompatActivity).registerForActivityResult(
             SelectMediaContract(
                 activity,
-                isMultiple,
                 isVideo
             )
         ) {
@@ -44,19 +43,19 @@ class MediaPicker(private val activity: Activity) {
         this.isMultiple = isMultiple
         this.isVideo = isVideo
         if (PermissionUtils.isPermissionsGranted(activity, isVideo)) {
-            startMediaPicker(isVideo)
+            startMediaPicker(isMultiple,isVideo)
         } else {
             PermissionUtils.requestPermissions(activity, isVideo) { granted, list ->
                 if (granted)
-                    startMediaPicker(isVideo)
+                    startMediaPicker(isMultiple,isVideo)
                 else
                     permissionLauncher.launch(list?.toTypedArray())
             }
         }
     }
 
-    private fun startMediaPicker(isVideo: Boolean) {
+    private fun startMediaPicker(isMultiple: Boolean,isVideo: Boolean) {
         val pickType = if (isVideo) arrayOf("video/*") else arrayOf("image/*")
-        selectImage.launch(pickType)
+        selectImage.launch(Pair(pickType,isMultiple))
     }
 }
