@@ -13,17 +13,21 @@ import androidx.core.content.ContextCompat
 import com.nickelfox.media_picker.R
 
 object PermissionUtils {
-    fun isPermissionsGranted(context: Context, isVideo: Boolean): Boolean {
-        val permissionList = requiredPermissions(isVideo).filter {
+    fun isPermissionsGranted(context: Context, isVideo: Boolean,isBoth:Boolean): Boolean {
+        val permissionList = requiredPermissions(isVideo,isBoth).filter {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }
-        return permissionList.size == requiredPermissions(isVideo).size
+        return permissionList.size == requiredPermissions(isVideo,isBoth).size
     }
 
-    private fun requiredPermissions(isVideo: Boolean): Array<String> {
+    private fun requiredPermissions(isVideo: Boolean,isBoth: Boolean): Array<String> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (isVideo)
+            if (isBoth) {
+                arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
                 arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
+            }else if(isVideo){
+                arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
+            }
             else
                 arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -39,9 +43,10 @@ object PermissionUtils {
     fun requestPermissions(
         activity: Activity,
         isVideo: Boolean,
+        isBoth: Boolean,
         callBack: (Boolean, List<String>?) -> Unit
     ) {
-        val permissions = requiredPermissions(isVideo)
+        val permissions = requiredPermissions(isVideo,isBoth)
         val notGrantedPermissions = permissions.filter {
             ContextCompat.checkSelfPermission(activity, it) == PackageManager.PERMISSION_DENIED
         }
