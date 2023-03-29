@@ -10,12 +10,14 @@ class MediaPicker(private val activity: Activity) {
     private var onMediaPickedListener: ((List<Uri>, List<String>) -> Unit)? = null
     private var isMultiple: Boolean = false
     private var isVideo: Boolean = false
+    private var isBothImagesVideos:Boolean = false
 
     private var permissionLauncher =
-        (activity as AppCompatActivity).registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionList ->
+        (activity as AppCompatActivity).registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()) { permissionList ->
             val allGranted = permissionList.all { it.value }
             if (allGranted)
-                startMediaPicker(isMultiple,isVideo)
+                startMediaPicker(isMultiple,isVideo,isBothImagesVideos)
         }
     private var selectImage =
         (activity as AppCompatActivity).registerForActivityResult(
@@ -36,26 +38,34 @@ class MediaPicker(private val activity: Activity) {
 
     fun pickMedia(
         isMultiple: Boolean,
-        isVideo: Boolean,
+        isVideoOnly: Boolean,
+        isBothImagesVideos:Boolean =false,
         listener: (List<Uri>, List<String>) -> Unit
     ) {
         this.onMediaPickedListener = listener
         this.isMultiple = isMultiple
-        this.isVideo = isVideo
-        if (PermissionUtils.isPermissionsGranted(activity, isVideo)) {
-            startMediaPicker(isMultiple,isVideo)
+        this.isVideo = isVideoOnly
+        this.isBothImagesVideos =isBothImagesVideos
+        if (PermissionUtils.isPermissionsGranted(activity, isVideo,isBothImagesVideos)) {
+            startMediaPicker(isMultiple,isVideoOnly,isBothImagesVideos)
         } else {
-            PermissionUtils.requestPermissions(activity, isVideo) { granted, list ->
+            PermissionUtils.requestPermissions(activity, isVideo,isBothImagesVideos) { granted, list ->
                 if (granted)
-                    startMediaPicker(isMultiple,isVideo)
+                    startMediaPicker(isMultiple,isVideoOnly,isBothImagesVideos)
                 else
                     permissionLauncher.launch(list?.toTypedArray())
             }
         }
     }
 
-    private fun startMediaPicker(isMultiple: Boolean,isVideo: Boolean) {
-        val pickType = if (isVideo) arrayOf("video/*") else arrayOf("image/*")
-        selectImage.launch(Pair(pickType,isMultiple))
+    private fun startMediaPicker(isMultiple: Boolean,isVideoOnly: Boolean,isBothImagesVideos: Boolean) {
+        val pickType = if (isBothImagesVideos) {
+            listOf("image/*","video/*") }
+        else if(isVideoOnly){
+            listOf("video/*")
+        } else {
+            listOf("image/*")
+        }
+        selectImage.launch(Pair(pickType.toTypedArray(),isMultiple))
     }
 }

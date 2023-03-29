@@ -4,10 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContract
 import com.nickelfox.media_picker.utils.getPath
 
-class SelectMediaContract(private val context: Context, private val isVideo:Boolean):
+class SelectMediaContract(private val context: Context, private val isVideoOnly:Boolean):
     ActivityResultContract<Pair<Array<String>,Boolean>, Pair<ArrayList<Uri>?, ArrayList<String>?>?>() {
 
     private lateinit var uri: Uri
@@ -17,7 +18,7 @@ class SelectMediaContract(private val context: Context, private val isVideo:Bool
     override fun createIntent(context: Context, input: Pair<Array<String>,Boolean>): Intent {
         return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = if (isVideo) "video/*" else "image/*"
+            type = if (isVideoOnly) "video/*" else "image/*"
             putExtra(Intent.EXTRA_MIME_TYPES, input.first)
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE,input.second)
         }
