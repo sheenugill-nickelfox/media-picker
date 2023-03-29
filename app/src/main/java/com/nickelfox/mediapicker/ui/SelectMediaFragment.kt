@@ -43,27 +43,30 @@ class SelectMediaFragment : Fragment() {
             itemRv.adapter = itemAdapter
             itemRv.layoutManager = LinearLayoutManager(requireContext())
             selectImageBtn.setOnClickListener {
-                selectMedia(isMultiple = false, isVideo = false)
+                selectMedia(isMultiple = false, isVideoOnly = false)
             }
             selectVideoBtn.setOnClickListener {
-                selectMedia(isMultiple = false, isVideo = true)
+                selectMedia(isMultiple = false, isVideoOnly = true)
             }
             selectMultipleImagesBtn.setOnClickListener {
-                selectMedia(isMultiple = true, isVideo = false)
+                selectMedia(isMultiple = true, isVideoOnly = false)
             }
             selectMultipleVideosBtn.setOnClickListener {
-                selectMedia(isMultiple = true, isVideo = true)
+                selectMedia(isMultiple = true, isVideoOnly = true)
             }
             noSelectBtn.setOnClickListener {
-                selectMedia(isMultiple = true, isVideo = false)
+                selectMedia(isMultiple = true, isVideoOnly = false,isBoth = true)
+            }
+            selectBothImagesVideos.setOnClickListener {
+                selectMedia(isMultiple = true, isVideoOnly = false,isBoth = true)
             }
             checkVisibility()
             selectedCount()
         }
     }
 
-    private fun selectMedia(isMultiple: Boolean, isVideo: Boolean) {
-        mediaPicker.pickMedia(isMultiple, isVideo) { mediaUris, mediaPaths ->
+    private fun selectMedia(isMultiple: Boolean, isVideoOnly: Boolean,isBoth:Boolean = false) {
+        mediaPicker.pickMedia(isMultiple, isVideoOnly,isBoth) { mediaUris, mediaPaths ->
             mediaPaths.forEach {
                 mediaItemList.add(File(it))
             }
