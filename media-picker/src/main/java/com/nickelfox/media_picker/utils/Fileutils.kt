@@ -105,12 +105,12 @@ fun getPath(context: Context?, uri: Uri): String? {
             return if ("primary".equals(type, ignoreCase = true)) {
                 Environment.getExternalStorageDirectory().toString() + "/" + split[1]
             } else{
-                val externalDirec = context?.getExternalFilesDirs(null)
-                if (externalDirec!!.size > 1){
-                    var externalpath = externalDirec[1].absolutePath
-                    externalpath=externalpath.substring(0,externalpath.indexOf("Android")) + split[1]
-                    if(File(externalpath).exists()){
-                        externalpath
+                val externalDirectory = context?.getExternalFilesDirs(null)
+                if (externalDirectory!!.size > 1){
+                    var externalPath = externalDirectory[1].absolutePath
+                    externalPath=externalPath.substring(0,externalPath.indexOf("Android")) + split[1]
+                    if(File(externalPath).exists()){
+                        externalPath
                     }else{
                         getFile(context, uri)
                     }
@@ -119,7 +119,6 @@ fun getPath(context: Context?, uri: Uri): String? {
                 }
             }
         } else if (isDownloadsDocument(uri)) {
-
             val filepath= getFilepath(context,uri)
             val path= Environment.getExternalStorageDirectory().toString() + "/Download/" +filepath
             if(File(path).exists()) {
@@ -127,12 +126,12 @@ fun getPath(context: Context?, uri: Uri): String? {
             val id = DocumentsContract.getDocumentId(uri)
             val split = id.split(":").toTypedArray()
             val type = split[0]
-            if("msf".equals(type,ignoreCase = true)) {
+            return if("msf".equals(type,ignoreCase = true)) {
                 getFile(context,uri)
             } else{
                 val contentUri=  ContentUris.withAppendedId(
                     Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id))
-                return getDataColumn(context!!, contentUri, null,null)
+                getDataColumn(context!!, contentUri, null,null)
             }
         } else if (isMediaDocument(uri)) {
             val docId = DocumentsContract.getDocumentId(uri)
@@ -156,7 +155,7 @@ fun getPath(context: Context?, uri: Uri): String? {
             )
             return getDataColumn(context!!, contentUri!!, selection, selectionArgs)
         } else if(isDriveUri(uri)){
-            getFile(context,uri)
+           return getFile(context,uri)
         } else if ("content".equals(uri.scheme, ignoreCase = true)) {
             // Return the remote address
             return if (isGooglePhotosUri(uri)){
