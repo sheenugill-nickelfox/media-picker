@@ -106,7 +106,7 @@
         android:padding="10dp"
         android:layout_marginEnd="5dp"
         android:text="@string/multiple_images"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/selectBothImagesVideos"
         app:layout_constraintEnd_toStartOf="@id/selectMultipleVideosBtn"
         app:layout_constraintStart_toStartOf="parent" />
     <Button
@@ -117,9 +117,19 @@
         android:padding="10dp"
         android:layout_marginStart="5dp"
         android:text="@string/multiple_videos"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/selectBothImagesVideos"
         app:layout_constraintStart_toEndOf="@id/selectMultipleImagesBtn"
         app:layout_constraintEnd_toEndOf="parent" />
+        <Button
+            android:id="@+id/selectBothImagesVideos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:padding="10dp"
+            android:text="@string/select_both_images_and_videos"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/selectMultipleImagesBtn"
+            app:layout_constraintEnd_toEndOf="@id/selectMultipleVideosBtn" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

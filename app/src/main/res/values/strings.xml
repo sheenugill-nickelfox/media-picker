@@ -9,4 +9,5 @@
     <string name="multiple_images">Multiple Images</string>
     <string name="video">video</string>
     <string name="image">Image</string>
+    <string name="select_both_images_and_videos">Select Both Images And Videos</string>
 </resources>
