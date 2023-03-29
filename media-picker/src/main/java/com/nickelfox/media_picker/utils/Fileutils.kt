@@ -102,15 +102,20 @@ fun getPath(context: Context?, uri: Uri): String? {
             val docId = DocumentsContract.getDocumentId(uri)
             val split = docId.split(":").toTypedArray()
             val type = split[0]
-            if ("primary".equals(type, ignoreCase = true)) {
-                return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
-            }
-            else{
+            return if ("primary".equals(type, ignoreCase = true)) {
+                Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+            } else{
                 val externalDirec = context?.getExternalFilesDirs(null)
                 if (externalDirec!!.size > 1){
                     var externalpath = externalDirec[1].absolutePath
                     externalpath=externalpath.substring(0,externalpath.indexOf("Android")) + split[1]
-                    return externalpath
+                    if(File(externalpath).exists()){
+                        externalpath
+                    }else{
+                        getFile(context, uri)
+                    }
+                }else {
+                    getFile(context, uri)
                 }
             }
         } else if (isDownloadsDocument(uri)) {
