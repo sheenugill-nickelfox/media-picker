@@ -2,7 +2,9 @@
 <resources>
     <string name="enable_permissions_title">Media Permissions are required to Pick Media</string>
     <string name="enable_permissions_body">You have previously disabled permissions</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="setting">Setting</string>
+    <string name="multiple_selection">MultipleSelection</string>
+    <string name="long_press">You have to perform Long Press for Multiple Selection</string>
 </resources>

@@ -1,9 +1,11 @@
 package com.nickelfox.media_picker.ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.nickelfox.media_picker.R
 import com.nickelfox.media_picker.utils.PermissionUtils
 
 class MediaPicker(private val activity: Activity) {
@@ -11,6 +13,7 @@ class MediaPicker(private val activity: Activity) {
     private var isMultiple: Boolean = false
     private var isVideo: Boolean = false
     private var isBothImagesVideos:Boolean = false
+    private var showLongPressInstructDialog = true
 
     private var permissionLauncher =
         (activity as AppCompatActivity).registerForActivityResult(
@@ -51,7 +54,7 @@ class MediaPicker(private val activity: Activity) {
         } else {
             PermissionUtils.requestPermissions(activity, isVideo,isBothImagesVideos) { granted, list ->
                 if (granted)
-                    startMediaPicker(isMultiple,isVideoOnly,isBothImagesVideos)
+                    startMediaPicker(isMultiple, isVideoOnly, isBothImagesVideos)
                 else
                     permissionLauncher.launch(list?.toTypedArray())
             }
@@ -66,6 +69,20 @@ class MediaPicker(private val activity: Activity) {
         } else {
             listOf("image/*")
         }
-        selectImage.launch(Pair(pickType.toTypedArray(),isMultiple))
+        if(isMultiple && showLongPressInstructDialog)
+            showAlertDialog(pickType)
+        else
+            selectImage.launch(Pair(pickType.toTypedArray(),isMultiple))
+
+    }
+
+    private fun showAlertDialog(pickType: List<String>) {
+        val builder = AlertDialog.Builder(activity)
+            .setTitle(activity.getString(R.string.multiple_selection))
+            .setMessage(activity.getString(R.string.long_press))
+            .setPositiveButton(activity.getString(R.string.ok)
+            ) { _, _ -> selectImage.launch(Pair(pickType.toTypedArray(),true)) }
+        builder.create().show()
+        showLongPressInstructDialog = false
     }
 }
