@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.nickelfox.media_picker.R
 import com.nickelfox.media_picker.utils.PermissionUtils
 
-class MediaPicker(private val activity: Activity) {
+class MediaPickerForActivity(private val activity: Activity) {
     private var onMediaPickedListener: ((List<Uri>, List<String>) -> Unit)? = null
     private var isMultiple: Boolean = false
     private var isVideo: Boolean = false
