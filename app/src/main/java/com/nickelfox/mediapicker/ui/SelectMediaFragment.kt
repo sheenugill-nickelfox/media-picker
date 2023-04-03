@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nickelfox.media_picker.ui.MediaPicker
+import com.nickelfox.media_picker.ui.MediaPickerForFragment
 import com.nickelfox.mediapicker.R
 import com.nickelfox.mediapicker.databinding.FragmentSelectMediaBinding
 import java.io.File
@@ -19,7 +19,7 @@ class SelectMediaFragment : Fragment() {
 
     private lateinit var itemAdapter: SelectedMediaAdapter
     private lateinit var mediaItemList: ArrayList<File>
-    private lateinit var mediaPicker: MediaPicker
+    private lateinit var mediaPickerForFragment: MediaPickerForFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +33,7 @@ class SelectMediaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             mediaItemList = ArrayList()
-            mediaPicker = MediaPicker(requireActivity())
+            mediaPickerForFragment = MediaPickerForFragment(this@SelectMediaFragment)
             itemAdapter =
                 SelectedMediaAdapter(requireContext(), object : SelectedMediaAdapter.ClickItem {
                     override fun onClick(type: String, uri: Uri) {
@@ -66,7 +66,7 @@ class SelectMediaFragment : Fragment() {
     }
 
     private fun selectMedia(isMultiple: Boolean, isVideoOnly: Boolean,isBoth:Boolean = false) {
-        mediaPicker.pickMedia(isMultiple, isVideoOnly,isBoth) { mediaUris, mediaPaths ->
+        mediaPickerForFragment.pickMedia(isMultiple, isVideoOnly,isBoth) { mediaUris, mediaPaths ->
             mediaPaths.forEach {
                 mediaItemList.add(File(it))
             }
