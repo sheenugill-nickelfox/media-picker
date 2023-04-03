@@ -48,7 +48,7 @@ afterEvaluate {
 
                 groupId = 'com.github.sheenugill-nickelfox'
                 artifactId = 'media-picker'
-                version = '1.0.0'
+                version = '1.1.0'
             }
         }
     }
