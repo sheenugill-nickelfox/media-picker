@@ -7,4 +7,7 @@
     <string name="setting">Setting</string>
     <string name="multiple_selection">MultipleSelection</string>
     <string name="long_press">You have to perform Long Press for Multiple Selection</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="crop_image">Crop Image</string>
+    <string name="save">save</string>
 </resources>
