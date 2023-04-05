@@ -55,7 +55,7 @@ class SelectMediaFragment : Fragment() {
                 selectMedia(isMultiple = true, isVideoOnly = true)
             }
             noSelectBtn.setOnClickListener {
-                selectMedia(isMultiple = true, isVideoOnly = false,isBoth = true)
+                selectMedia(isMultiple = false, isVideoOnly = false,isBoth = false, isCropped = true)
             }
             selectBothImagesVideos.setOnClickListener {
                 selectMedia(isMultiple = true, isVideoOnly = false,isBoth = true)
@@ -65,16 +65,32 @@ class SelectMediaFragment : Fragment() {
         }
     }
 
-    private fun selectMedia(isMultiple: Boolean, isVideoOnly: Boolean,isBoth:Boolean = false) {
-        mediaPickerForFragment.pickMedia(isMultiple, isVideoOnly,isBoth) { mediaUris, mediaPaths ->
-            mediaPaths.forEach {
-                mediaItemList.add(File(it))
+    private fun selectMedia(isMultiple: Boolean, isVideoOnly: Boolean,
+                            isBoth:Boolean = false,isCropped:Boolean=false) {
+        if(isCropped){
+            mediaPickerForFragment.pickAndCropImage{bitmap, file ->
+              mediaItemList.add(file)
+                addFileToAdapter()
             }
-            itemAdapter.submitList(mediaItemList)
-            itemAdapter.notifyDataSetChanged()
-            checkVisibility()
-            selectedCount()
+        }else {
+            mediaPickerForFragment.pickMedia(
+                isMultiple,
+                isVideoOnly,
+                isBoth
+            ) { mediaUris, mediaPaths ->
+                mediaPaths.forEach {
+                    mediaItemList.add(File(it))
+                }
+                addFileToAdapter()
+            }
         }
+    }
+
+    private fun addFileToAdapter(){
+        itemAdapter.submitList(mediaItemList)
+        itemAdapter.notifyDataSetChanged()
+        checkVisibility()
+        selectedCount()
     }
 
     private fun checkVisibility() {
