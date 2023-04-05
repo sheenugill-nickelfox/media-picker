@@ -1,6 +1,8 @@
 package com.nickelfox.media_picker.ui
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -49,7 +51,7 @@ class ImageCropFragment : DialogFragment() {
         binding?.apply {
             save.setOnClickListener {
                 cropImageView.croppedImage?.let {
-                    onSuccess?.invoke(it,requireContext().getFileFromBitmap(it))
+                    onSuccess?.invoke(redrawBitmap(it),requireContext().getFileFromBitmap(redrawBitmap(it)))
                 }
                 dismiss()
             }
@@ -57,6 +59,16 @@ class ImageCropFragment : DialogFragment() {
                 dismiss()
             }
         }
+    }
+
+    private fun redrawBitmap(bitmap:Bitmap):Bitmap{
+        val whiteBackgroundBitmap = Bitmap.createBitmap(
+            bitmap.width, bitmap.height, bitmap.config
+        )
+        val canvas = Canvas(whiteBackgroundBitmap)
+        canvas.drawColor(Color.WHITE)
+        canvas.drawBitmap(bitmap, 0f, 0f, null)
+        return whiteBackgroundBitmap
     }
 
     fun setOnCropSuccessListener(onSuccess: ((Bitmap, File) -> Unit)?): ImageCropFragment {
