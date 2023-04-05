@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.nickelfox.media_picker.R
 import com.nickelfox.media_picker.utils.PermissionUtils
+import java.io.File
 
 class MediaPickerForFragment(private val fragment: Fragment) {
     private var onMediaPickedListener: ((List<Uri>, List<String>) -> Unit)? = null
@@ -15,7 +16,7 @@ class MediaPickerForFragment(private val fragment: Fragment) {
     private var isBothImagesVideos: Boolean = false
     private var showLongPressInstructDialog = true
     private var isCropped: Boolean = false
-    private var onCroppedImageListener: ((Bitmap) -> Unit)? = null
+    private var onCroppedImageListener: ((Bitmap,File) -> Unit)? = null
 
     private var permissionLauncher =
         fragment.registerForActivityResult(
@@ -83,7 +84,7 @@ class MediaPickerForFragment(private val fragment: Fragment) {
             .show(fragment.childFragmentManager, null)
     }
 
-    fun pickAndCropImage(listener: (Bitmap) -> Unit) {
+    fun pickAndCropImage(listener: (Bitmap,File) -> Unit) {
         this.onCroppedImageListener = listener
         this.isCropped = true
         if (PermissionUtils.isPermissionsGranted(fragment.requireContext(),

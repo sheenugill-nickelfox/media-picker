@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.nickelfox.media_picker.databinding.FragmentImageCropBinding
+import com.nickelfox.media_picker.utils.getFileFromBitmap
+import java.io.File
 
 class ImageCropFragment : DialogFragment() {
     private var binding: FragmentImageCropBinding? = null
-    private var onSuccess: ((Bitmap) -> Unit)? = null
+    private var onSuccess: ((Bitmap,File) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +42,7 @@ class ImageCropFragment : DialogFragment() {
         binding?.apply {
             save.setOnClickListener {
                 cropImageView.croppedImage?.let {
-                    onSuccess?.invoke(it)
+                    onSuccess?.invoke(it,requireContext().getFileFromBitmap(it))
                 }
                 dismiss()
             }
@@ -50,7 +52,7 @@ class ImageCropFragment : DialogFragment() {
         }
     }
 
-    fun setOnCropSuccessListener(onSuccess: ((Bitmap) -> Unit)?): ImageCropFragment {
+    fun setOnCropSuccessListener(onSuccess: ((Bitmap, File) -> Unit)?): ImageCropFragment {
         this.onSuccess = onSuccess
         return this
     }

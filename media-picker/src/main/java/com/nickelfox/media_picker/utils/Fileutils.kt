@@ -3,11 +3,13 @@ package com.nickelfox.media_picker.utils
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.math.min
@@ -208,4 +210,32 @@ fun getFile(context: Context?, uri: Uri): String? {
     }catch (e: Exception) {
         return null
     }
+}
+
+fun Context.getTmpFile(fileName: String? = null, suffix: String? = null): File {
+    val tmpFile = File.createTempFile(
+        fileName ?: "TEMP_${System.currentTimeMillis()}",
+        ".${suffix ?: "png"}",
+        cacheDir
+    ).apply {
+        createNewFile()
+        deleteOnExit()
+    }
+    return tmpFile
+}
+
+fun Context.getFileFromBitmap(bitmap: Bitmap): File {
+    val f = getTmpFile()
+
+    //Convert bitmap to byte array
+    val bos = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 20 /*ignored for PNG*/, bos)
+    val bitmapData = bos.toByteArray()
+
+    //write the bytes in file
+    val fos = FileOutputStream(f)
+    fos.write(bitmapData)
+    fos.flush()
+    fos.close()
+    return f
 }
