@@ -58,10 +58,16 @@ class SelectMediaFragment : Fragment() {
                 selectMedia(isMultiple = true, isVideoOnly = true)
             }
             noSelectBtn.setOnClickListener {
-                selectCroppedImage(isOval = true)
+                selectMedia(isMultiple = true, isVideoOnly = false, isBoth = true)
             }
             selectBothImagesVideos.setOnClickListener {
                 selectMedia(isMultiple = true, isVideoOnly = false, isBoth = true)
+            }
+            selectOvalImagesBtn.setOnClickListener {
+                selectCroppedImage(true)
+            }
+            selectRectImageBtn.setOnClickListener {
+                selectCroppedImage(false)
             }
             checkVisibility()
             selectedCount()
