@@ -36,6 +36,7 @@ class MediaPickerForFragment(private val fragment: Fragment) {
             it?.first?.let { it1 ->
                 if (isCropped) {
                     continueCroppingImage(it1[0])
+                    isCropped = false
                 } else {
                     it.second?.let { it2 ->
                         onMediaPickedListener?.invoke(
