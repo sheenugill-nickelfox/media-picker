@@ -16,6 +16,8 @@ class MediaPickerForFragment(private val fragment: Fragment) {
     private var isBothImagesVideos: Boolean = false
     private var showLongPressInstructDialog = true
     private var isCropped: Boolean = false
+    private var isOval: Boolean = false
+
     private var onCroppedImageListener: ((Bitmap,File) -> Unit)? = null
 
     private var permissionLauncher =
@@ -35,8 +37,9 @@ class MediaPickerForFragment(private val fragment: Fragment) {
         ) {
             it?.first?.let { it1 ->
                 if (isCropped) {
-                    continueCroppingImage(it1[0])
+                    continueCroppingImage(it1[0],isOval)
                     isCropped = false
+                    isOval = false
                 } else {
                     it.second?.let { it2 ->
                         onMediaPickedListener?.invoke(
@@ -78,16 +81,17 @@ class MediaPickerForFragment(private val fragment: Fragment) {
             }
         }
     }
-    private fun continueCroppingImage(uri: Uri) {
+    private fun continueCroppingImage(uri: Uri,isOval:Boolean) {
         ImageCropFragment
-            .newInstance(uri = uri)
+            .newInstance(uri = uri,if(isOval) ImageShape.OVAL else ImageShape.RECTANGLE)
             .setOnCropSuccessListener(onCroppedImageListener)
             .show(fragment.childFragmentManager, null)
     }
 
-    fun pickAndCropImage(listener: (Bitmap,File) -> Unit) {
+    fun pickAndCropImage(isShapeOval:Boolean,listener: (Bitmap,File) -> Unit) {
         this.onCroppedImageListener = listener
         this.isCropped = true
+        this.isOval = isShapeOval
         if (PermissionUtils.isPermissionsGranted(fragment.requireContext(),
                 isVideo = false,
                 isBoth = false

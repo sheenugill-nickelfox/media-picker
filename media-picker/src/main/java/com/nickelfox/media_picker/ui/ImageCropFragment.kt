@@ -8,9 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import com.canhub.cropper.CropImageView
 import com.nickelfox.media_picker.databinding.FragmentImageCropBinding
 import com.nickelfox.media_picker.utils.getFileFromBitmap
 import java.io.File
+
+enum class ImageShape {
+    OVAL,RECTANGLE
+}
 
 class ImageCropFragment : DialogFragment() {
     private var binding: FragmentImageCropBinding? = null
@@ -33,6 +38,8 @@ class ImageCropFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
             val uri = Uri.parse(arguments?.getString(IMAGE_URI))
+            cropImageView.cropShape = arguments?.getString(
+                IMAGE_SHAPE)?.let { CropImageView.CropShape.valueOf(it) }
             cropImageView.setImageUriAsync(uri)
             initListeners()
         }
@@ -59,9 +66,11 @@ class ImageCropFragment : DialogFragment() {
 
     companion object{
         private const val IMAGE_URI = "IMAGE_URI"
-        fun newInstance(uri: Uri):ImageCropFragment{
+        private const val IMAGE_SHAPE = "IMAGE_SHAPE"
+        fun newInstance(uri: Uri,shape:ImageShape):ImageCropFragment{
             val fragment = ImageCropFragment()
-            fragment.arguments = bundleOf(IMAGE_URI to uri.toString())
+            fragment.arguments = bundleOf(IMAGE_URI to uri.toString(),
+            IMAGE_SHAPE to shape.name)
             return fragment
         }
     }
