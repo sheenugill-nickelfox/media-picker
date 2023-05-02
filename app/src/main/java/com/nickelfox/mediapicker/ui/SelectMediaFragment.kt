@@ -14,9 +14,7 @@ import com.nickelfox.mediapicker.databinding.FragmentSelectMediaBinding
 import java.io.File
 
 class SelectMediaFragment : Fragment() {
-    private var _binding: FragmentSelectMediaBinding? = null
-    private val binding get() = _binding!!
-
+    private lateinit var binding: FragmentSelectMediaBinding
     private lateinit var itemAdapter: SelectedMediaAdapter
     private lateinit var mediaItemList: ArrayList<File>
     private lateinit var mediaPickerForFragment: MediaPickerForFragment
@@ -25,7 +23,7 @@ class SelectMediaFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSelectMediaBinding.inflate(inflater, container, false)
+        binding = FragmentSelectMediaBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -115,10 +113,5 @@ class SelectMediaFragment : Fragment() {
         binding.selectedCountTv.text = buildString {
             append("(${itemAdapter.currentList.size})")
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 }

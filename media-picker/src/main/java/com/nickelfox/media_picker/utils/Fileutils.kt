@@ -96,7 +96,7 @@ fun getDataColumn(
  * @param uri
  * @return path of the selected image file from gallery
  */
-fun getPath(context: Context?, uri: Uri): String? {
+fun getPath(context: Context, uri: Uri): String? {
     // DocumentProvider
     if (DocumentsContract.isDocumentUri(context, uri)) {
         // ExternalStorageProvider
@@ -107,18 +107,21 @@ fun getPath(context: Context?, uri: Uri): String? {
             return if ("primary".equals(type, ignoreCase = true)) {
                 Environment.getExternalStorageDirectory().toString() + "/" + split[1]
             } else{
-                val externalDirectory = context?.getExternalFilesDirs(null)
-                if (externalDirectory!!.size > 1){
-                    var externalPath = externalDirectory[1].absolutePath
-                    externalPath=externalPath.substring(0,externalPath.indexOf("Android")) + split[1]
-                    if(File(externalPath).exists()){
-                        externalPath
-                    }else{
+                val externalDirectory = context.getExternalFilesDirs(null)
+                externalDirectory?.let {
+                    if (it.size >1){
+                        var externalPath = externalDirectory[1].absolutePath
+                        externalPath=externalPath.substring(0,externalPath.indexOf("Android")) + split[1]
+                        if(File(externalPath).exists()){
+                            externalPath
+                        }else{
+                            getFile(context, uri)
+                        }
+                    }else {
                         getFile(context, uri)
                     }
-                }else {
-                    getFile(context, uri)
                 }
+
             }
         } else if (isDownloadsDocument(uri)) {
             val filepath= getFilepath(context,uri)
@@ -133,7 +136,7 @@ fun getPath(context: Context?, uri: Uri): String? {
             } else{
                 val contentUri=  ContentUris.withAppendedId(
                     Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id))
-                getDataColumn(context!!, contentUri, null,null)
+                getDataColumn(context, contentUri, null,null)
             }
         } else if (isMediaDocument(uri)) {
             val docId = DocumentsContract.getDocumentId(uri)
@@ -155,7 +158,7 @@ fun getPath(context: Context?, uri: Uri): String? {
             val selectionArgs = arrayOf<String?>(
                 split[1]
             )
-            return getDataColumn(context!!, contentUri!!, selection, selectionArgs)
+            return contentUri?.let { getDataColumn(context, it, selection, selectionArgs) }
         } else if(isDriveUri(uri)){
            return getFile(context,uri)
         } else if ("content".equals(uri.scheme, ignoreCase = true)) {
@@ -164,7 +167,7 @@ fun getPath(context: Context?, uri: Uri): String? {
                 uri.lastPathSegment }
             else {
                 getDataColumn(
-                    context!!,
+                    context,
                     uri,
                     null,
                     null
@@ -177,20 +180,20 @@ fun getPath(context: Context?, uri: Uri): String? {
     return null
 }
 
-fun getFilepath(context: Context?, uri: Uri): String {
+fun getFilepath(context: Context?, uri: Uri): String? {
     val returnCursor =
         context?.contentResolver?.query(uri, null, null, null, null)
-    val nameIndex = returnCursor!!.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-    returnCursor.moveToFirst()
-    val name=returnCursor.getString(nameIndex)
-    returnCursor.close()
+    val nameIndex = returnCursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+    returnCursor?.moveToFirst()
+    val name= nameIndex?.let { returnCursor.getString(it) }
+    returnCursor?.close()
     return name
 }
 
 fun getFile(context: Context?, uri: Uri): String? {
     val filepath= getFilepath(context,uri)
     try{
-        val file = File(context?.cacheDir, filepath)
+        val file = filepath?.let { File(context?.cacheDir, it) }
         val inputStream =
             context?.contentResolver?.openInputStream(uri)
         val outputStream = FileOutputStream(file)
@@ -206,7 +209,7 @@ fun getFile(context: Context?, uri: Uri): String? {
         }
         inputStream?.close()
         outputStream.close()
-        return file.path
+        return file?.path
     }catch (e: Exception) {
         return null
     }

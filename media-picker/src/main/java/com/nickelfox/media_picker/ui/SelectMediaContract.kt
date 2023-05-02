@@ -32,8 +32,8 @@ class SelectMediaContract(private val context: Context, private val isVideoOnly:
         }
         else{
             if(intent.clipData != null){
-                val count=intent.clipData?.itemCount
-                for(i in 0 until count!!){
+                val count=intent.clipData?.itemCount?:0
+                for(i in 0 until count){
                     uri= (intent.clipData?.getItemAt(i)?.uri  ?: "") as Uri
                     mediaUriList?.add(uri)
                     getPath(context,uri)?.let { mediaPathList?.add(it) }
