@@ -22,7 +22,7 @@ class SelectedMediaAdapter(var context: Context, var listener: ClickItem) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(mediaItems: File) {
             binding.apply {
-                Glide.with(context).load(mediaItems.toUri()).into(itemSelectedTv)
+                Glide.with(context).load(mediaItems.path).into(itemSelectedTv)
                 selectedPathTv.text = mediaItems.path
                 val type = getMimeType(mediaItems.toUri())
                 videoPlayBtn.isVisible = type == "video"
