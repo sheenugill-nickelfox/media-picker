@@ -18,7 +18,7 @@ class MediaPickerForFragment(private val fragment: Fragment) {
     private var isCropped: Boolean = false
     private var isOval: Boolean = false
 
-    private var onCroppedImageListener: ((Bitmap,File) -> Unit)? = null
+    private var onCroppedImageListener: ((Bitmap, File) -> Unit)? = null
 
     private var permissionLauncher =
         fragment.registerForActivityResult(
@@ -37,7 +37,7 @@ class MediaPickerForFragment(private val fragment: Fragment) {
         ) {
             it?.first?.let { it1 ->
                 if (isCropped) {
-                    continueCroppingImage(it1[0],isOval)
+                    continueCroppingImage(it1[0], isOval)
                     isCropped = false
                     isOval = false
                 } else {
@@ -81,21 +81,24 @@ class MediaPickerForFragment(private val fragment: Fragment) {
             }
         }
     }
-    private fun continueCroppingImage(uri: Uri,isOval:Boolean) {
+
+    private fun continueCroppingImage(uri: Uri, isOval: Boolean) {
         ImageCropFragment
-            .newInstance(uri = uri,if(isOval) ImageShape.OVAL else ImageShape.RECTANGLE)
+            .newInstance(uri = uri, if (isOval) ImageShape.OVAL else ImageShape.RECTANGLE)
             .setOnCropSuccessListener(onCroppedImageListener)
             .show(fragment.childFragmentManager, null)
     }
 
-    fun pickAndCropImage(isShapeOval:Boolean,listener: (Bitmap,File) -> Unit) {
+    fun pickAndCropImage(isShapeOval: Boolean, listener: (Bitmap, File) -> Unit) {
         this.onCroppedImageListener = listener
         this.isCropped = true
         this.isOval = isShapeOval
-        if (PermissionUtils.isPermissionsGranted(fragment.requireContext(),
+        if (PermissionUtils.isPermissionsGranted(
+                fragment.requireContext(),
                 isVideo = false,
                 isBoth = false
-            )) {
+            )
+        ) {
             startMediaPicker(isMultiple = false, isVideoOnly = false, isBothImagesVideos = false)
         } else {
             PermissionUtils.requestPermissions(
@@ -121,18 +124,15 @@ class MediaPickerForFragment(private val fragment: Fragment) {
         isVideoOnly: Boolean,
         isBothImagesVideos: Boolean
     ) {
-        val pickType = if (isBothImagesVideos) {
-            listOf("image/*", "video/*")
-        } else if (isVideoOnly) {
-            listOf("video/*")
-        } else {
-            listOf("image/*")
+        val pickType = when {
+            isBothImagesVideos -> listOf("image/*", "video/*")
+            isVideoOnly -> listOf("video/*")
+            else -> listOf("image/*")
         }
         if (isMultiple && showLongPressInstructDialog)
             showAlertDialog(pickType)
         else
             selectImage.launch(Pair(pickType.toTypedArray(), isMultiple))
-
     }
 
     private fun showAlertDialog(pickType: List<String>) {
