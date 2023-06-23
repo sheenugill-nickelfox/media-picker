@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.ImageCropFragment">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/crop_image"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_13"
+        android:textColor="@color/cardview_dark_background"
+        android:layout_marginTop="@dimen/dp_30"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_50"
+        app:cardCornerRadius="@dimen/dp_20"
+        app:cardElevation="0dp"
+        app:layout_constraintDimensionRatio="h 1,.85"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintWidth_percent=".75">
+        <com.canhub.cropper.CropImageView
+            android:id="@+id/cropImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            app:cropAspectRatioX="1"
+            app:cropAspectRatioY="1"
+            app:cropScaleType="fitCenter"/>
+    </androidx.cardview.widget.CardView>
+    <Button
+        android:id="@+id/save"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_36"
+        android:text="@string/save"
+        android:backgroundTint="@color/btn_bg_color"
+        app:layout_constraintEnd_toEndOf="@id/card"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/cancel"
+        app:layout_constraintTop_toBottomOf="@+id/card" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:text="@string/cancel"
+        android:backgroundTint="@color/btn_bg_color"
+        app:layout_constraintBaseline_toBaselineOf="@id/save"
+        app:layout_constraintEnd_toStartOf="@+id/save"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/card" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

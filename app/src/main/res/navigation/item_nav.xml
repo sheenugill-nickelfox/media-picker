@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_nav"
+    app:startDestination="@id/selectMediaFragment">
+
+    <fragment
+        android:id="@+id/selectMediaFragment"
+        android:name="com.nickelfox.mediapicker.ui.SelectMediaFragment"
+        android:label="fragment_select_media"
+        tools:layout="@layout/fragment_select_media" >
+        <action
+            android:id="@+id/action_selectMediaFragment_to_itemViewFragment"
+            app:destination="@id/itemViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemViewFragment"
+        android:name="com.nickelfox.mediapicker.ui.ItemViewFragment"
+        android:label="fragment_item_view"
+        tools:layout="@layout/fragment_item_view" />
+</navigation>
